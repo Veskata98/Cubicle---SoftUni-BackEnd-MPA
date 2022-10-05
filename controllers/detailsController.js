@@ -1,11 +1,12 @@
 const detailsController = require('express').Router();
-const Cubic = require('../models/cubicModel');
+const Cube = require('../models/Cube');
 
 detailsController.get('/:id', async (req, res) => {
-    const cubicId = req.params.id;
-    const cubic = await Cubic.findById(cubicId);
+    const cubeId = req.params.id;
+    const cube = await Cube.findById(cubeId).populate('accessories');
+    console.log(cube);
 
-    res.render('details', { title: 'Cubicle', cubic });
+    res.render('details', { title: 'Cube', cube });
 });
 
 module.exports = detailsController;

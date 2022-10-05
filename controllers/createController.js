@@ -1,5 +1,5 @@
 const createController = require('express').Router();
-const Cubic = require('../models/cubicModel');
+const Cube = require('../models/Cube');
 
 createController.get('/', (req, res) => {
     res.render('create', { title: 'Create Cube Page' });
@@ -8,7 +8,7 @@ createController.get('/', (req, res) => {
 createController.post('/', async (req, res) => {
     console.log(req.body);
     try {
-        await Cubic.create({
+        await Cube.create({
             name: req.body.name,
             description: req.body.description,
             imageUrl: req.body.imageUrl,
