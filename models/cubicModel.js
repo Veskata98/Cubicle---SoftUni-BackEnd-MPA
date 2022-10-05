@@ -1,18 +1,18 @@
-const uniqid = require('uniqid');
+const { Schema, model, Types } = require('mongoose');
 
-class Cube {
-    constructor(data) {
-        this._id = uniqid();
-        this.name = data.name;
-        this.description = data.description;
-        this.imageUrl = data.imageUrl;
-        this.difficultyLevel = data.difficultyLevel;
-    }
-}
+const cubicSchema = new Schema({
+    name: { type: String, required: true },
+    description: { type: String, required: true, maxlength: 300 },
+    imageUrl: { type: String, required: true },
+    difficultyLevel: { type: Number, required: true, min: 1, max: 6 },
+    accessories: { type: [Types.ObjectId], default: [], ref: 'Accessory' },
+});
 
-function createCubic(cubicData) {
-    const cubic = new Cube(cubicData);
-    return cubic;
-}
+cubicSchema.path('imageUrl').validate((val) => {
+    urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+    return urlRegex.test(val);
+}, 'Invalid URL.');
 
-module.exports = createCubic;
+const Cubic = model('Cubic', cubicSchema);
+
+module.exports = Cubic;

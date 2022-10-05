@@ -1,17 +1,11 @@
 const detailsController = require('express').Router();
-const fs = require('fs');
+const Cubic = require('../models/cubicModel');
 
 detailsController.get('/:id', async (req, res) => {
-    fs.readFile('./config/database.json', async (err, data) => {
-        if (err) throw Error(err);
+    const cubicId = req.params.id;
+    const cubic = await Cubic.findById(cubicId);
 
-        const itemId = req.params.id;
-        const records = await JSON.parse(data.toString());
-
-        const cubic = records.find((x) => x._id == itemId);
-
-        res.render('details', { title: 'Cubicle', cubic });
-    });
+    res.render('details', { title: 'Cubicle', cubic });
 });
 
 module.exports = detailsController;

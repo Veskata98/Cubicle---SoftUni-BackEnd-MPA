@@ -1,32 +1,20 @@
-const createCubic = require('../models/cubicModel');
-const fs = require('fs');
-
 const createController = require('express').Router();
-
-const filename = './config/database.json';
-
-let data = fs.readFileSync(filename);
-
-if (data == '') {
-    data = [];
-} else {
-    data = JSON.parse(data);
-}
+const Cubic = require('../models/cubicModel');
 
 createController.get('/', (req, res) => {
     res.render('create', { title: 'Create Cube Page' });
 });
 
-createController.post('/', (req, res) => {
-    const result = createCubic(req.body);
-    data.push(result);
-
+createController.post('/', async (req, res) => {
+    console.log(req.body);
     try {
-        fs.writeFile(filename, JSON.stringify(data, null, 2), (err) => {
-            if (err != null) {
-                throw new Error();
-            }
+        await Cubic.create({
+            name: req.body.name,
+            description: req.body.description,
+            imageUrl: req.body.imageUrl,
+            difficultyLevel: req.body.difficultyLevel,
         });
+
         res.redirect('/');
     } catch (error) {
         res.render('404', { title: 'Form not passed' });
