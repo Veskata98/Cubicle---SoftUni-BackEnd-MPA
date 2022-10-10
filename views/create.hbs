@@ -2,6 +2,11 @@
     <h1>
         Create
     </h1>
+    {{#if error}}
+        <p class='error'>
+            {{error}}
+        </p>
+    {{/if}}
     <div class='form'>
         <form action='/create' method='post'>
             <label for='name'>

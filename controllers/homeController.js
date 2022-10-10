@@ -1,15 +1,20 @@
+const { getCubes } = require('../services/cubeService');
+
 const homeController = require('express').Router();
-const Cube = require('../models/Cube');
 
 homeController.get('/', async (req, res) => {
-    const [search, from, to] = Object.values(req.query).map((x) => x.trim());
+    try {
+        const [search, from, to] = Object.values(req.query).map((x) => x.trim());
+        const cubes = await getCubes(search, from, to);
 
-    let cubes = await Cube.find({
-        name: { $regex: search || '', $options: 'i' },
-        difficultyLevel: { $gte: from || 1, $lte: to || 6 },
-    });
+        const user = req.user;
 
-    res.render('index', { title: 'Cube', cubes, search, from, to });
+        cubes.forEach((x) => (x.isOwner = user?.userId == x.creatorId));
+
+        res.render('index', { title: 'Cubicle', cubes, search, from, to, user });
+    } catch (error) {
+        res.render('404', { title: 'Cubicle' });
+    }
 });
 
 module.exports = homeController;

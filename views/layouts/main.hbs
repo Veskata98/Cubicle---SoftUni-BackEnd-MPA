@@ -22,20 +22,43 @@
                         </a>
                     </li>
                     <li>
-                        <a href='/create'>
-                            Add a Cube
-                        </a>
-                    </li>
-                    <li>
-                        <a href='/create/accessory'>
-                            Add Accessory
-                        </a>
-                    </li>
-                    <li>
                         <a href='/about'>
                             About
                         </a>
                     </li>
+                    {{#if hasUser}}
+                        <li>
+                            <a href='/create'>
+                                Add a Cube
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/create/accessory'>
+                                Add Accessory
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/auth/logout'>
+                                Logout
+                            </a>
+                        </li>
+                        <li>
+                            <span class='navbar-username'>
+                                Welcome, {{username}}
+                            </span>
+                        </li>
+                    {{else}}
+                        <li>
+                            <a href='/auth/login'>
+                                Login
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/auth/register'>
+                                Register
+                            </a>
+                        </li>
+                    {{/if}}
                 </ul>
             </header>
             {{{body}}}

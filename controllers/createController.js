@@ -1,23 +1,34 @@
+const { createCube } = require('../services/cubeService');
+
 const createController = require('express').Router();
-const Cube = require('../models/Cube');
 
 createController.get('/', (req, res) => {
-    res.render('create', { title: 'Create Cube Page' });
+    res.render('create', { title: 'Create Cube - Cubicle' });
 });
 
 createController.post('/', async (req, res) => {
-    console.log(req.body);
     try {
-        await Cube.create({
-            name: req.body.name,
-            description: req.body.description,
-            imageUrl: req.body.imageUrl,
-            difficultyLevel: req.body.difficultyLevel,
+        const userId = req.user.userId;
+
+        Object.values(req.body).forEach((x) => {
+            if (x == '') {
+                throw new Error('All fields are required');
+            }
         });
+
+        await createCube(userId, req.body);
 
         res.redirect('/');
     } catch (error) {
-        res.render('404', { title: 'Form not passed' });
+        let errorMsg;
+
+        if (error.errors) {
+            Object.values(error.errors).forEach((x) => (errorMsg = x.properties?.message));
+        } else {
+            errorMsg = error.message;
+        }
+
+        res.render('create', { title: 'Create Cube - Cubicle', error: errorMsg });
     }
 });
 

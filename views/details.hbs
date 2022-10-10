@@ -20,6 +20,14 @@
             <a class='btn' href='/'>
                 Back
             </a>
+            {{#if isOwner}}
+                <a class='btn' href='/edit/{{_id}}'>
+                    Edit
+                </a>
+                <a class='btn' href='/delete/{{_id}}'>
+                    Delete
+                </a>
+            {{/if}}
         </div>
         <h2>
             Accessories

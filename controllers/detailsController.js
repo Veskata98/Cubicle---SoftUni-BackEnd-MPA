@@ -1,12 +1,20 @@
+const { getCubeById } = require('../services/cubeService');
+
 const detailsController = require('express').Router();
-const Cube = require('../models/Cube');
 
 detailsController.get('/:id', async (req, res) => {
-    const cubeId = req.params.id;
-    const cube = await Cube.findById(cubeId).populate('accessories');
-    console.log(cube);
+    try {
+        const cubeId = req.params.id;
+        const cube = await getCubeById(cubeId);
 
-    res.render('details', { title: 'Cube', cube });
+        const userId = req.user?.userId;
+
+        cube.isOwner = cube.creatorId == userId;
+
+        res.render('details', { title: `${cube.name} - Cubicle`, cube });
+    } catch (error) {
+        res.render('404', { title: 'Cubicle' });
+    }
 });
 
 module.exports = detailsController;
