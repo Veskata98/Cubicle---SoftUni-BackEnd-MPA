@@ -1,22 +1,37 @@
 const createAccessoryController = require('express').Router();
-const Accessory = require('../models/Accessory');
+const { createAccessory } = require('../services/accessoryService');
 
 createAccessoryController.get('/', (req, res) => {
-    res.render('createAccessory', { title: 'Create Accessory' });
+    res.render('createAccessory', { title: 'Create Accessory - Cubicle' });
 });
 
 createAccessoryController.post('/', async (req, res) => {
-    console.log(req.body);
     try {
-        await Accessory.create({
-            name: req.body.name,
-            description: req.body.description,
-            imageUrl: req.body.imageUrl,
+        const name = req.body.name.trim();
+        const description = req.body.description.trim();
+        const imageUrl = req.body.imageUrl.trim();
+
+        const accessoryData = { name, description, imageUrl };
+
+        Object.values(accessoryData).forEach((x) => {
+            if (x == '') {
+                throw new Error('All fields are required');
+            }
         });
+
+        await createAccessory(accessoryData);
 
         res.redirect('/');
     } catch (error) {
-        res.render('404', { title: 'Form not passed' });
+        let errorMsg;
+
+        if (error.errors) {
+            Object.values(error.errors).forEach((x) => (errorMsg = x.properties?.message));
+        } else {
+            errorMsg = error.message;
+        }
+
+        res.render('createAccessory', { title: 'Create Accessory - Cubicle', error: errorMsg });
     }
 });
 
