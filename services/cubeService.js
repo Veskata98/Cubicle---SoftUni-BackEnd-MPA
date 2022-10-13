@@ -1,7 +1,7 @@
 const Cube = require('../models/Cube');
 
 async function getCubes(search, from, to) {
-    return Cube.find({
+    return await Cube.find({
         name: { $regex: search || '', $options: 'i' },
         difficultyLevel: { $gte: from || 1, $lte: to || 6 },
     }).lean();
@@ -9,14 +9,14 @@ async function getCubes(search, from, to) {
 
 async function getCubeById(cubeId, isLeanedData = true) {
     if (isLeanedData) {
-        return Cube.findById(cubeId).populate('accessories').lean();
+        return await Cube.findById(cubeId).populate('accessories').lean();
     } else {
-        return Cube.findById(cubeId).populate('accessories');
+        return await Cube.findById(cubeId).populate('accessories');
     }
 }
 
 async function createCube(userId, cubeData) {
-    Cube.create({
+    await Cube.create({
         name: cubeData.name,
         description: cubeData.description,
         imageUrl: cubeData.imageUrl,
@@ -26,7 +26,7 @@ async function createCube(userId, cubeData) {
 }
 
 async function deleteCube(cubeId) {
-    Cube.findByIdAndDelete(cubeId);
+    await Cube.findByIdAndDelete(cubeId);
 }
 
 module.exports = {

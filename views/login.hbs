@@ -1,10 +1,14 @@
 <h1>
     Login Form
 </h1>
-{{#if error}}
-    <p class='error'>
-        {{error}}
-    </p>
+{{#if errorMessages}}
+    <div class='error'>
+        {{#each errorMessages}}
+            <p>
+                {{this}}
+            </p>
+        {{/each}}
+    </div>
 {{/if}}
 <div class='form'>
     <form action='/auth/login' method='POST'>

@@ -1,4 +1,5 @@
 const { createCube } = require('../services/cubeService');
+const { errorParser } = require('../utils/errorParser');
 
 const createController = require('express').Router();
 
@@ -20,15 +21,8 @@ createController.post('/', async (req, res) => {
 
         res.redirect('/');
     } catch (error) {
-        let errorMsg;
-
-        if (error.errors) {
-            Object.values(error.errors).forEach((x) => (errorMsg = x.properties?.message));
-        } else {
-            errorMsg = error.message;
-        }
-
-        res.render('create', { title: 'Create Cube - Cubicle', error: errorMsg });
+        const errorMessages = errorParser(error);
+        res.render('create', { title: 'Create Cube - Cubicle', errorMessages, body: { ...req.body } });
     }
 });
 

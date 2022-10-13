@@ -1,23 +1,23 @@
 const Accessory = require('../models/Accessory');
 
 async function getAccessories() {
-    return Accessory.find({}).lean();
+    return await Accessory.find({}).lean();
 }
 
 async function getAccessoryById(acceessoryId, isLeanedData = true) {
     if (isLeanedData) {
-        return Accessory.findById(acceessoryId).lean();
+        return await Accessory.findById(acceessoryId).lean();
     } else {
-        return Accessory.findById(acceessoryId);
+        return await Accessory.findById(acceessoryId);
     }
 }
 
 async function getAvailableAccessories(availableAccessoriesIds) {
-    return Accessory.find({ _id: { $in: availableAccessoriesIds } }).lean();
+    return await Accessory.find({ _id: { $in: availableAccessoriesIds } }).lean();
 }
 
 async function createAccessory(accessoryData) {
-    Accessory.create({ ...accessoryData });
+    await Accessory.create({ ...accessoryData });
 }
 
 module.exports = {

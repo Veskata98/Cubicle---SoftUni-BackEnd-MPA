@@ -26,7 +26,8 @@ authController.post('/login', isGuest, async (req, res) => {
 
         res.redirect('/');
     } catch (error) {
-        res.render('login', { title: 'Login - Cubicle', error: error.message, username });
+        const errorMessages = errorParser(error);
+        res.render('login', { title: 'Login - Cubicle', errorMessages, username });
     }
 });
 
@@ -75,9 +76,8 @@ authController.post(
 
             res.redirect('/auth/register');
         } catch (error) {
-            const errorMsg = errorParser(error);
-            console.log(errorMsg);
-            res.render('register', { title: 'Register - Cubicle', errorMsg, username });
+            const errorMessages = errorParser(error);
+            res.render('register', { title: 'Register - Cubicle', errorMessages, username });
         }
     },
 );
