@@ -4,7 +4,7 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: true,
-        minlength: [3, 'Username must be atleast 3 characters long'],
+        minlength: [5, 'Username must be atleast 5 characters long'],
     },
     hashedPassword: { type: String, required: true },
 });

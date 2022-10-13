@@ -1,7 +1,9 @@
 const authController = require('express').Router();
 
+const { body, validationResult } = require('express-validator');
 const { isGuest, hasUser } = require('../middlewares/guards');
 const { login, register } = require('../services/authService');
+const { errorParser } = require('../utils/errorParser');
 
 //LOGIN
 /////////////////////////////
@@ -35,28 +37,50 @@ authController.get('/register', isGuest, (req, res) => {
     res.render('register', { title: 'Register - Cubicle' });
 });
 
-authController.post('/register', isGuest, async (req, res) => {
-    const username = req.body.username.trim();
-    const password = req.body.password.trim();
-    const repass = req.body.repeatPassword.trim();
+authController.post(
+    '/register',
+    isGuest,
+    body('username').trim().isAlphanumeric('en-US').withMessage('Username must contain only latin letters and digits'),
+    body('password')
+        .trim()
+        .isAlphanumeric('en-US')
+        .withMessage('Password must contain only latin letters and digits')
+        .isLength({ min: 8 })
+        .withMessage('Password must be atleast 8 characters long'),
+    async (req, res) => {
+        const username = req.body.username;
+        const password = req.body.password;
+        const repass = req.body.repeatPassword;
 
-    try {
-        if (username == '' || password == '') {
-            throw new Error('All fields are required');
+        try {
+            if (username == '' || password == '') {
+                throw new Error('All fields are required');
+            }
+
+            if (password !== repass) {
+                throw new Error('Password do not match');
+            }
+
+            const errors = validationResult(req)
+                .array()
+                .map((x) => x.msg)
+                .join('\n');
+
+            if (errors) {
+                throw new Error(errors);
+            }
+
+            const userData = await register(username, password);
+            attachToken(req, res, userData);
+
+            res.redirect('/auth/register');
+        } catch (error) {
+            const errorMsg = errorParser(error);
+            console.log(errorMsg);
+            res.render('register', { title: 'Register - Cubicle', errorMsg, username });
         }
-
-        if (password !== repass) {
-            throw new Error('Password do not match');
-        }
-
-        const userData = await register(username, password);
-        attachToken(req, res, userData);
-
-        res.redirect('/');
-    } catch (error) {
-        res.render('register', { title: 'Register - Cubicle', error: error.message, username });
-    }
-});
+    },
+);
 
 //LOGOUT
 /////////////////////////////

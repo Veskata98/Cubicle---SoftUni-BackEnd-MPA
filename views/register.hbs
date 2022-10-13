@@ -1,10 +1,14 @@
 <h1>
     Register Form
 </h1>
-{{#if error}}
-    <p class='error'>
-        {{error}}
-    </p>
+{{#if errorMsg}}
+    <div class='error'>
+        {{#each errorMsg}}
+            <p>
+                {{this}}
+            </p>
+        {{/each}}
+    </div>
 {{/if}}
 <div class='form'>
     <form action='/auth/register' method='POST'>

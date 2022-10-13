@@ -1,6 +1,6 @@
-const { getCubeById } = require('../services/cubeService');
-
 const editController = require('express').Router();
+
+const { getCubeById } = require('../services/cubeService');
 
 editController.get('/:cubeId', async (req, res) => {
     try {

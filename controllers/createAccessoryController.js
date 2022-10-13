@@ -1,4 +1,5 @@
 const createAccessoryController = require('express').Router();
+
 const { createAccessory } = require('../services/accessoryService');
 
 createAccessoryController.get('/', (req, res) => {

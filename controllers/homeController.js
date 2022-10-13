@@ -1,6 +1,6 @@
-const { getCubes } = require('../services/cubeService');
-
 const homeController = require('express').Router();
+
+const { getCubes } = require('../services/cubeService');
 
 homeController.get('/', async (req, res) => {
     try {
